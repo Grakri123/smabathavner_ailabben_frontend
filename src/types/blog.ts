@@ -106,8 +106,8 @@ export interface ChatConversation {
   category: 'support' | 'salg' | 'generell' | 'klage';
 }
 
-// Klvarme Contacts Types (for klvarme_contacts table)
-export interface KlvarmeContact {
+// Småbåthavner Contacts Types (for smabathavner_contacts table)
+export interface SmabathavnerContact {
   id: number;
   session_id: string;
   customer_name: string;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, User, Bot, Clock, Mail, Calendar, MessageSquare, ExternalLink } from 'lucide-react';
 import { contactService } from '../../utils/contactService';
-import type { KlvarmeContact } from '../../types/blog';
+import type { SmabathavnerContact } from '../../types/blog';
 
 interface ChatSessionModalProps {
   isOpen: boolean;
@@ -23,7 +23,7 @@ const ChatSessionModal: React.FC<ChatSessionModalProps> = ({
   sessionId,
   contactData
 }) => {
-  const [contact, setContact] = useState<KlvarmeContact | null>(null);
+  const [contact, setContact] = useState<SmabathavnerContact | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

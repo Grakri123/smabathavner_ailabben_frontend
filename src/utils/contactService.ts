@@ -1,8 +1,8 @@
 import { supabase } from '../store/authStore';
-import type { KlvarmeContact, ContactSession, PaginatedResponse } from '../types/blog';
+import type { SmabathavnerContact, ContactSession, PaginatedResponse } from '../types/blog';
 
 class ContactService {
-  private tableName = 'klvarme_contacts';
+  private tableName = 'smabathavner_contacts';
 
   // Get all contacts with optional filtering and pagination
   async getAllContacts(
@@ -115,7 +115,7 @@ class ContactService {
   }
 
   // Get specific contact by ID
-  async getContactById(id: number): Promise<KlvarmeContact | null> {
+  async getContactById(id: number): Promise<SmabathavnerContact | null> {
     const { data, error } = await supabase
       .from(this.tableName)
       .select('*')
@@ -123,11 +123,11 @@ class ContactService {
       .single();
 
     if (error) throw error;
-    return data as KlvarmeContact;
+    return data as SmabathavnerContact;
   }
 
   // Get contact by session_id
-  async getContactBySessionId(sessionId: string): Promise<KlvarmeContact | null> {
+  async getContactBySessionId(sessionId: string): Promise<SmabathavnerContact | null> {
     const { data, error } = await supabase
       .from(this.tableName)
       .select('*')
@@ -135,7 +135,7 @@ class ContactService {
       .single();
 
     if (error) throw error;
-    return data as KlvarmeContact;
+    return data as SmabathavnerContact;
   }
 
   // Get contact statistics
@@ -254,7 +254,7 @@ class ContactService {
       if (error) throw error;
 
       console.log('🔍 Debug: Raw contacts from database:');
-      contacts?.forEach((contact: KlvarmeContact, index) => {
+      contacts?.forEach((contact: SmabathavnerContact, index) => {
         console.log(`  ${index + 1}. ID: ${contact.id}, Session: ${contact.session_id}, Customer: ${contact.customer_name}, Email: ${contact.customer_email}`);
         console.log(`     Conversation History Type: ${typeof contact.conversation_history}`);
         console.log(`     Message Count: ${this.getMessageCount(contact.conversation_history)}`);
