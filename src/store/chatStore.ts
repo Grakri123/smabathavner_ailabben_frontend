@@ -28,22 +28,23 @@ const agents: Agent[] = [
     color: 'bg-purple-500',
     n8nEndpoint: '376118ea-b971-4c3a-9b38-564426cb0d41' // n8n AI assistant webhook
   },
-  {
-    id: 'seo-agent',
-    name: 'SEO Agent',
-    description: 'Administrer blogginnlegg og SEO-innhold',
-    icon: '🔍',
-    color: 'bg-green-500',
-    n8nEndpoint: undefined // SEO Agent har ikke chat-funksjonalitet
-  },
-  {
-    id: 'chat-agent',
-    name: 'Chat Agent',
-    description: 'Administrer chat-samtaler og kommunikasjon',
-    icon: '💬',
-    color: 'bg-blue-500',
-    n8nEndpoint: undefined // Chat Agent har ikke chat-funksjonalitet
-  },
+  // SEO Agent and Chat Agent are hidden for this customer
+  // {
+  //   id: 'seo-agent',
+  //   name: 'SEO Agent',
+  //   description: 'Administrer blogginnlegg og SEO-innhold',
+  //   icon: '🔍',
+  //   color: 'bg-green-500',
+  //   n8nEndpoint: undefined
+  // },
+  // {
+  //   id: 'chat-agent',
+  //   name: 'Chat Agent',
+  //   description: 'Administrer chat-samtaler og kommunikasjon',
+  //   icon: '💬',
+  //   color: 'bg-blue-500',
+  //   n8nEndpoint: undefined
+  // },
   {
     id: 'email-agent',
     name: 'Epost Agent',
