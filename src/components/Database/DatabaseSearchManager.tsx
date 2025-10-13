@@ -3,6 +3,7 @@ import { Search, Database, FileText, Users, Eye, RefreshCw, AlertCircle, FolderO
 import { databaseSearchService } from '../../utils/databaseSearchService';
 import type { Customer, Document, SearchStats } from '../../types/database';
 import DocumentDetailsModal from './DocumentDetailsModal';
+import CustomerAutocomplete from './CustomerAutocomplete';
 
 type SearchTab = 'customers' | 'documents';
 
@@ -12,7 +13,7 @@ const DatabaseSearchManager: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [allCustomers, setAllCustomers] = useState<Customer[]>([]);
-  const [selectedCustomerFilter, setSelectedCustomerFilter] = useState<string>('');
+  const [selectedCustomerFilter, setSelectedCustomerFilter] = useState<Customer | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,7 @@ const DatabaseSearchManager: React.FC = () => {
   // Search when tab changes
   useEffect(() => {
     setSearchTerm('');
-    setSelectedCustomerFilter('');
+    setSelectedCustomerFilter(null);
     setCurrentPage(1);
     if (activeTab === 'customers') {
       searchCustomers(1);
@@ -110,7 +111,7 @@ const DatabaseSearchManager: React.FC = () => {
       
       const response = await databaseSearchService.searchDocuments(
         searchTerm,
-        selectedCustomerFilter || undefined,
+        selectedCustomerFilter?.id || undefined,
         page,
         10
       );
@@ -146,8 +147,13 @@ const DatabaseSearchManager: React.FC = () => {
 
   const handleViewCustomerDocuments = async (customer: Customer) => {
     setSelectedCustomer(customer);
-    setSelectedCustomerFilter(customer.id);
+    setSelectedCustomerFilter(customer);
     setActiveTab('documents');
+  };
+
+  const handleCustomerFilterChange = (customer: Customer | null) => {
+    setSelectedCustomerFilter(customer);
+    setCurrentPage(1);
   };
 
   return (
@@ -323,27 +329,13 @@ const DatabaseSearchManager: React.FC = () => {
             </div>
             
             {activeTab === 'documents' && (
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                <select
-                  className="px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  style={{ 
-                    border: '1px solid rgb(var(--border))',
-                    backgroundColor: 'rgb(var(--background))',
-                    color: 'rgb(var(--foreground))'
-                  }}
-                  value={selectedCustomerFilter}
-                  onChange={(e) => {
-                    setSelectedCustomerFilter(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option value="">Alle kunder</option>
-                  {allCustomers.map(customer => (
-                    <option key={customer.id} value={customer.id}>
-                      {customer.name}
-                    </option>
-                  ))}
-                </select>
+              <div className="w-full sm:w-auto sm:min-w-[300px]">
+                <CustomerAutocomplete
+                  customers={allCustomers}
+                  selectedCustomer={selectedCustomerFilter}
+                  onSelect={handleCustomerFilterChange}
+                  placeholder="Filtrer på kunde..."
+                />
               </div>
             )}
           </div>

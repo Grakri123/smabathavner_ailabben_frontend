@@ -23,7 +23,8 @@
 
 ### 2. **Dokument-søk**
 - Søk i filnavn
-- Filtrer dokumenter etter spesifikk kunde
+- **Autocomplete kunde-filter** - Skriv "S", "SM", "SMÅ" osv. for live forslag
+- Velg kunde fra forslag eller tøm for å vise alle
 - Se dokument-metadata (vår ref, datoer)
 - Klikk på dokument for å se tekstinnhold
 
@@ -155,9 +156,17 @@ export interface DocumentEmbedding {
 - Hovedkomponent for søk
 - Tabs for Kunder og Dokumenter
 - Stats cards
-- Søkefelt og filtre
+- Søkefelt og autocomplete kunde-filter
 - Tabeller med resultater
 - Paginering
+
+**CustomerAutocomplete** (`src/components/Database/CustomerAutocomplete.tsx`)
+- Autocomplete/typeahead komponent for kundefilter
+- Live søk med forslag mens du skriver
+- Dropdown med matchende kunder
+- Viser kundenavn og kundenummer
+- Tøm-knapp (X) for å fjerne filter
+- Følger style guide 100%
 
 **DocumentDetailsModal** (`src/components/Database/DocumentDetailsModal.tsx`)
 - Modal for å vise dokument-detaljer
@@ -246,8 +255,10 @@ Følger **STYLE_GUIDE.md** 100%:
 
 **Søke i dokumenter:**
 1. Velg "Dokumenter"-tab
-2. Søk i filnavn ELLER velg kunde fra dropdown
-3. Klikk på øye-ikon for å se dokumentet
+2. Søk i filnavn ELLER skriv kundenavn i autocomplete-feltet
+3. Forslag vises automatisk mens du skriver (f.eks. "S" → "SM" → "SMÅ" → "Småbåthavner")
+4. Velg kunde fra listen eller klikk X for å tømme filter
+5. Klikk på øye-ikon for å se dokumentet
 
 **Se dokument-innhold:**
 1. Åpne et dokument (øye-ikon)
