@@ -95,7 +95,7 @@ const Sidebar: React.FC = () => {
               {user?.email || 'Bruker'}
             </p>
             <p className="text-xs truncate" style={{ color: 'rgb(var(--muted-foreground))' }}>
-              {user?.email === 'system@ailabben.no' ? 'System' : 'Kunde'}
+              {user?.email === 'system@ailabben.no' ? 'System' : user?.email === 'simen@smabathavner.no' ? 'Administrator' : 'Kunde'}
             </p>
           </div>
         </div>

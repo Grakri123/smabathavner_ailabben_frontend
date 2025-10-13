@@ -223,8 +223,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       setState(prev => ({ ...prev, loading: true }));
 
-      // Only allow system@ailabben.no
-      if (email !== 'system@ailabben.no') {
+      // Only allow authorized emails
+      const authorizedEmails = ['system@ailabben.no', 'simen@smabathavner.no'];
+      if (!authorizedEmails.includes(email)) {
         setState(prev => ({ ...prev, loading: false }));
         return { success: false, error: 'Denne e-posten har ikke tilgang til applikasjonen.' };
       }
