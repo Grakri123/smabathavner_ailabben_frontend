@@ -148,6 +148,13 @@ const CustomerAutocomplete: React.FC<CustomerAutocompleteProps> = ({
         </div>
       )}
 
+      {/* Success indicator */}
+      {!isLoading && customers.length > 0 && (
+        <div className="mt-2 text-xs" style={{ color: 'rgb(var(--green-600))' }}>
+          ✅ {customers.length} kunder lastet fra database
+        </div>
+      )}
+
       {/* Dropdown suggestions */}
       {isOpen && !selectedCustomer && (
         <div 

@@ -101,27 +101,52 @@ class DatabaseSearchService {
     }
   }
 
-  // Get all customers (for dropdown filter)
+  // Get all customers (for dropdown filter) - with pagination to handle Supabase 1000 row limit
   async getAllCustomers(): Promise<Customer[]> {
     try {
-      console.log('📞 DatabaseSearchService: Fetching all customers from Supabase...');
+      console.log('📞 DatabaseSearchService: Fetching ALL customers from Supabase (with pagination)...');
       
-      const { data, error } = await supabase
-        .from('customers')
-        .select('*')
-        .order('name');
+      let allCustomers: Customer[] = [];
+      let page = 0;
+      const pageSize = 1000; // Supabase default limit
+      let hasMore = true;
 
-      if (error) {
-        console.error('❌ Supabase error fetching customers:', error);
-        throw error;
+      while (hasMore) {
+        const from = page * pageSize;
+        const to = from + pageSize - 1;
+
+        console.log(`📄 Fetching customers page ${page + 1} (rows ${from}-${to})...`);
+
+        const { data, error } = await supabase
+          .from('customers')
+          .select('*')
+          .order('name')
+          .range(from, to);
+
+        if (error) {
+          console.error('❌ Supabase error fetching customers page:', page + 1, error);
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          allCustomers = [...allCustomers, ...data];
+          console.log(`✅ Page ${page + 1}: Fetched ${data.length} customers (total so far: ${allCustomers.length})`);
+          
+          // If we got less than pageSize, we've reached the end
+          hasMore = data.length === pageSize;
+          page++;
+        } else {
+          hasMore = false;
+        }
       }
 
-      console.log('✅ DatabaseSearchService: Fetched customers:', {
-        count: data?.length || 0,
-        firstFive: data?.slice(0, 5).map(c => ({ name: c.name, number: c.customer_number }))
+      console.log('✅ DatabaseSearchService: Fetched ALL customers:', {
+        totalCount: allCustomers.length,
+        pagesFetched: page,
+        firstFive: allCustomers.slice(0, 5).map(c => ({ name: c.name, number: c.customer_number }))
       });
 
-      return data as Customer[];
+      return allCustomers as Customer[];
     } catch (error) {
       console.error('❌ Error fetching customers:', error);
       // Return empty array instead of throwing to prevent UI break
