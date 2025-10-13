@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     console.log('🔍 Validating download token:', token.substring(0, 20) + '...');
 
     // Validate token using Supabase RPC function
-    const { data, error } = await supabase.rpc('public.validate_download_token', {
+    const { data, error } = await supabase.rpc('validate_download_token', {
       p_token: token,
       p_user_id: null // Let the function handle user validation
     });
