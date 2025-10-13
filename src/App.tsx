@@ -10,6 +10,7 @@ import ChatManager from './components/Chat/ChatManager';
 import SupportManager from './components/Support/SupportManager';
 import MainAssistant from './components/Assistant/MainAssistant';
 import EmailManager from './components/Email/EmailManager';
+import DatabaseSearchManager from './components/Database/DatabaseSearchManager';
 import ThemeToggle from './components/ThemeToggle';
 import { FileText, ClipboardList, Menu, X } from 'lucide-react';
 
@@ -51,6 +52,10 @@ const AppContent: React.FC = () => {
         if (activeAgentId === 'email-agent') {
           return <EmailManager />;
         }
+        // For Database Agent - vis DatabaseSearchManager automatisk
+        if (activeAgentId === 'database-agent') {
+          return <DatabaseSearchManager />;
+        }
         return <MainAssistant />;
       case 'blog':
         // Vis ChatManager (chat-samtaler tabell) kun når Chat Agent er valgt
@@ -60,6 +65,10 @@ const AppContent: React.FC = () => {
         // Vis EmailManager når Email Agent er valgt
         if (activeAgentId === 'email-agent') {
           return <EmailManager />;
+        }
+        // Vis DatabaseSearchManager når Database Agent er valgt
+        if (activeAgentId === 'database-agent') {
+          return <DatabaseSearchManager />;
         }
         return <BlogManager />;
       case 'tasks':
@@ -112,8 +121,8 @@ const AppContent: React.FC = () => {
         } lg:relative fixed inset-y-0 left-0 z-50`}>
           <Sidebar />
           
-                  {/* Secondary Navigation - Only show for SEO, Chat and Email Agent */}
-        {(activeAgentId === 'seo-agent' || activeAgentId === 'chat-agent' || activeAgentId === 'email-agent') && (
+                  {/* Secondary Navigation - Only show for SEO, Chat, Email and Database Agent */}
+        {(activeAgentId === 'seo-agent' || activeAgentId === 'chat-agent' || activeAgentId === 'email-agent' || activeAgentId === 'database-agent') && (
             <div className="w-16 flex flex-col items-center py-4 space-y-4 shadow-lg" 
               style={{ 
                 backgroundColor: 'rgb(var(--sidebar-background))', 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configuration for n8n API
-const N8N_BASE_URL = import.meta.env.VITE_N8N_BASE_URL || 'https://ailabben.n8n.ailabben.no';
+const N8N_BASE_URL = import.meta.env.VITE_N8N_BASE_URL || 'https://smabathavner.n8n.ailabben.no';
 
 const api = axios.create({
   baseURL: N8N_BASE_URL,
@@ -51,8 +51,8 @@ export const n8nApi = {
       try {
         console.log(`Sending message to n8n (attempt ${attempt}/${maxRetries}):`, { webhookId, message: message.substring(0, 50) + '...' });
         
-        // Hardcoded full webhook URL
-        const fullWebhookUrl = 'https://klvarme.n8n.ailabben.no/webhook/376118ea-b971-4c3a-9b38-564426cb0d41';
+        // Build webhook URL using base URL and webhook ID
+        const fullWebhookUrl = `${N8N_BASE_URL}/webhook/${webhookId}`;
         
         console.log('🔗 Making request to:', fullWebhookUrl);
         console.log('📤 Request payload:', { message, timestamp: new Date().toISOString() });

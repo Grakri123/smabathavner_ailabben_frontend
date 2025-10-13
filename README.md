@@ -1,6 +1,8 @@
-# AI Agent Frontend Template 🤖
+# Småbåthavner AI Agent Frontend 🤖
 
-> **Template Repository** - Klon dette repoet for nye kunder og tilpass etter behov
+> **Kunde**: Småbåthavner  
+> **Domene**: https://smabathavner.ailabben.no  
+> **Basert på**: AI Labben Frontend Template
 
 ---
 
@@ -108,7 +110,7 @@ cp env.example .env.local
 Rediger `.env.local`:
 ```env
 # n8n Configuration
-VITE_N8N_BASE_URL=https://kunde.n8n.domain.no
+VITE_N8N_BASE_URL=https://smabathavner.n8n.ailabben.no
 
 # Supabase Configuration  
 VITE_SUPABASE_URL=https://xyz.supabase.co
@@ -117,6 +119,8 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 # Development
 VITE_DEV_MODE=false
 ```
+
+**VIKTIG**: Se [DOMAIN_SETUP.md](DOMAIN_SETUP.md) for komplett setup-guide for Småbåthavner.
 
 ### 4. Start Utviklingsserver
 
@@ -218,7 +222,7 @@ create table public.tasks (
 
 ```env
 # I n8n miljøvariabler
-N8N_CORS_ORIGIN=http://localhost:3000,https://kunde-domain.com
+N8N_CORS_ORIGIN=http://localhost:3000,https://smabathavner.ailabben.no
 ```
 
 ### Webhook Setup

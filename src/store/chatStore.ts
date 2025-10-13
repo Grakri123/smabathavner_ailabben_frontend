@@ -51,6 +51,14 @@ const agents: Agent[] = [
     icon: '📧',
     color: 'bg-indigo-500',
     n8nEndpoint: undefined // Email Agent har ikke chat-funksjonalitet
+  },
+  {
+    id: 'database-agent',
+    name: 'Database Søk',
+    description: 'Søk etter kunder og dokumenter i databasen',
+    icon: '🗄️',
+    color: 'bg-teal-500',
+    n8nEndpoint: undefined // Database Agent har ikke chat-funksjonalitet
   }
 ];
 
