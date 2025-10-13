@@ -43,10 +43,23 @@ export default async function handler(req, res) {
 
     console.log('✅ Token validated, downloading file:', validationResult.file_name);
 
+    // Extract file path from full URL if needed
+    let filePath = validationResult.file_path;
+    
+    // If file_path is a full URL, extract just the path part
+    if (filePath.startsWith('http')) {
+      // Extract path after /storage/v1/object/public/customer_docs/
+      const match = filePath.match(/\/customer_docs\/(.+?)(\?|$)/);
+      if (match) {
+        filePath = match[1];
+        console.log('📁 Extracted file path:', filePath);
+      }
+    }
+
     // Get file from Supabase Storage
     const { data: fileData, error: downloadError } = await supabase.storage
       .from('customer_docs') // Correct bucket name
-      .download(validationResult.file_path);
+      .download(filePath);
 
     if (downloadError) {
       console.error('❌ File download error:', downloadError);
@@ -96,7 +109,8 @@ function getContentType(extension) {
     'png': 'image/png',
     'gif': 'image/gif',
     'zip': 'application/zip',
-    'rar': 'application/x-rar-compressed'
+    'rar': 'application/x-rar-compressed',
+    'msg': 'application/vnd.ms-outlook'
   };
 
   return contentTypes[extension.toLowerCase()] || 'application/octet-stream';
