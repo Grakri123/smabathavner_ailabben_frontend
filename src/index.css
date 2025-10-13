@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Adobe Typekit - Video Font */
+@import url('https://use.typekit.net/ofa8sxj.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ailabben CSS Custom Properties */
+:root {
+  /* Primary Colors */
+  --orange-primary: 249 115 22; /* #f97316 */
+  --purple-primary: 107 114 128; /* Grå i stedet for lilla */
+  --dark-blue: 18 42 57; /* #122a39 */
+  
+  /* Orange Palette */
+  --orange-50: 255 247 237;
+  --orange-100: 255 237 213;
+  --orange-200: 254 215 170;
+  --orange-300: 253 186 116;
+  --orange-400: 251 146 60;
+  --orange-500: 249 115 22;
+  --orange-600: 234 88 12;
+  --orange-700: 194 65 12;
+  --orange-800: 154 52 18;
+  --orange-900: 124 45 18;
+  
+  /* Purple Palette */
+  --purple-50: 249 250 251;   /* Grå-50 */
+  --purple-100: 243 244 246;  /* Grå-100 */
+  --purple-200: 229 231 235;  /* Grå-200 */
+  --purple-300: 209 213 219;  /* Grå-300 */
+  --purple-400: 156 163 175;  /* Grå-400 */
+  --purple-500: 107 114 128;  /* Grå-500 */
+  --purple-600: 75 85 99;     /* Grå-600 */
+  --purple-700: 55 65 81;     /* Grå-700 */
+  --purple-800: 31 41 55;     /* Grå-800 */
+  --purple-900: 17 24 39;     /* Grå-900 */
+  
+  /* Green Palette */
+  --green-50: 240 253 244;
+  --green-100: 220 252 231;
+  --green-200: 187 247 208;
+  --green-300: 134 239 172;
+  --green-400: 74 222 128;
+  --green-500: 34 197 94;
+  --green-600: 22 163 74;
+  --green-700: 21 128 61;
+  --green-800: 22 101 52;
+  --green-900: 20 83 45;
+  
+  /* Layout */
+  --radius: 0.5rem;
+  --container-max-width: 100rem; /* 1600px */
+}
+
+/* Light Theme */
+.light {
+  /* System Colors */
+  --background: 255 255 255;
+  --foreground: 18 42 57; /* dark-blue */
+  --muted: 249 250 251;
+  --muted-foreground: 107 114 128;
+  --border: 229 231 235;
+  --input: 243 244 246;
+  --card: 255 255 255;
+  --card-foreground: 18 42 57;
+  --primary: var(--orange-primary);
+  --primary-foreground: 255 255 255;
+  --secondary: 243 244 246;
+  --secondary-foreground: 17 24 39;
+  --accent: 243 244 246;
+  --accent-foreground: 17 24 39;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --ring: var(--orange-primary);
+  
+  /* Sidebar */
+  --sidebar-background: 245 245 245;
+  --sidebar-border: 229 231 235;
+  
+  /* Chat */
+  --chat-background: 255 255 255;
+  --message-background: 255 255 255;
+  --message-border: 229 231 235;
+  --typing-dot: 107 114 128;
+}
+
+/* Dark Theme */
+.dark {
+  /* System Colors */
+  --background: 17 24 39; /* gray-900 */
+  --foreground: 243 244 246; /* gray-100 */
+  --muted: 31 41 55; /* gray-800 */
+  --muted-foreground: 156 163 175; /* gray-400 */
+  --border: 55 65 81; /* gray-700 */
+  --input: 31 41 55; /* gray-800 */
+  --card: 31 41 55; /* gray-800 */
+  --card-foreground: 243 244 246; /* gray-100 */
+  --primary: var(--orange-primary);
+  --primary-foreground: 255 255 255;
+  --secondary: 55 65 81; /* gray-700 */
+  --secondary-foreground: 243 244 246; /* gray-100 */
+  --accent: 55 65 81; /* gray-700 */
+  --accent-foreground: 243 244 246; /* gray-100 */
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --ring: var(--orange-primary);
+  
+  /* Sidebar */
+  --sidebar-background: 31 41 55; /* gray-800 */
+  --sidebar-border: 55 65 81; /* gray-700 */
+  
+  /* Chat */
+  --chat-background: 17 24 39; /* gray-900 */
+  --message-background: 31 41 55; /* gray-800 */
+  --message-border: 55 65 81; /* gray-700 */
+  --typing-dot: 156 163 175; /* gray-400 */
+}
+
+/* Default to light theme if no class is set */
+:root:not(.dark) {
+  /* System Colors */
+  --background: 255 255 255;
+  --foreground: 18 42 57; /* dark-blue */
+  --muted: 249 250 251;
+  --muted-foreground: 107 114 128;
+  --border: 229 231 235;
+  --input: 243 244 246;
+  --card: 255 255 255;
+  --card-foreground: 18 42 57;
+  --primary: var(--orange-primary);
+  --primary-foreground: 255 255 255;
+  --secondary: 243 244 246;
+  --secondary-foreground: 17 24 39;
+  --accent: 243 244 246;
+  --accent-foreground: 17 24 39;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --ring: var(--orange-primary);
+  
+  /* Sidebar */
+  --sidebar-background: 245 245 245;
+  --sidebar-border: 229 231 235;
+  
+  /* Chat */
+  --chat-background: 255 255 255;
+  --message-background: 255 255 255;
+  --message-border: 229 231 235;
+  --typing-dot: 107 114 128;
+}
+
+/* Typography */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  color: rgb(var(--foreground));
+  background-color: rgb(var(--background));
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light theme gradient background */
+.light body, :root:not(.dark) body {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(249, 250, 251, 0.8) 25%, 
+    rgba(243, 244, 246, 0.6) 50%, 
+    rgba(255, 247, 237, 0.8) 75%, 
+    rgba(255, 255, 255, 1) 100%
+  ) !important;
+  background-attachment: fixed;
+}
+
+/* Dark theme solid background */
+.dark body {
+  background: rgb(var(--background)) !important;
+}
+
+h1, h2, h3, h4, h5, h6, .heading {
+  font-family: "video", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.logo-text {
+  font-family: "video", serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Gradient Text Animation */
+.gradient-text {
+  background: linear-gradient(135deg, rgb(var(--orange-primary)), rgb(var(--purple-primary)));
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 3s ease-in-out infinite;
+}
+
+/* Gradient Background (matches website) */
+.gradient-background {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(249, 250, 251, 0.8) 25%, 
+    rgba(243, 244, 246, 0.6) 50%, 
+    rgba(255, 247, 237, 0.8) 75%, 
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+
+@keyframes gradientMove {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Typing Animation */
+.typing-animation {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 0;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgb(var(--typing-dot));
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  30% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@layer base {
+  body {
+    @apply text-gray-900;
+    /* Fjernet bg-gray-50 for å la gradient bakgrunnen vises */
+  }
+  
+  * {
+    @apply scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent;
+  }
+}
+
+@layer components {
+  .chat-message {
+    @apply mb-4 flex;
+  }
+  
+  .chat-message.user {
+    @apply justify-end;
+  }
+  
+  .chat-message.assistant {
+    @apply justify-start;
+  }
+  
+  .message-bubble {
+    @apply max-w-[70%] rounded-lg px-4 py-2 shadow-sm;
+    background-color: rgb(var(--message-background));
+    color: rgb(var(--foreground));
+    border: 1px solid rgb(var(--message-border));
+  }
+  
+  .message-bubble.user {
+    background-color: rgb(var(--message-background));
+    color: rgb(var(--foreground));
+    border: 1px solid rgb(var(--message-border));
+  }
+  
+  .message-bubble.assistant {
+    background-color: rgb(var(--message-background));
+    color: rgb(var(--foreground));
+    border: 1px solid rgb(var(--message-border));
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: rgb(209 213 219);
+    border-radius: 0.25rem;
+  }
+  
+  .scrollbar-track-transparent::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+}
