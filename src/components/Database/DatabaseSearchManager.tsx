@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Database, FileText, Users, Eye, RefreshCw, AlertCircle, FolderOpen } from 'lucide-react';
+import { Search, Database, FileText, Users, Eye, RefreshCw, AlertCircle, FolderOpen, Download } from 'lucide-react';
 import { databaseSearchService } from '../../utils/databaseSearchService';
+import { secureDownloadService } from '../../utils/secureDownloadService';
 import type { Customer, Document, SearchStats } from '../../types/database';
 import DocumentDetailsModal from './DocumentDetailsModal';
 import CustomerAutocomplete from './CustomerAutocomplete';
@@ -161,6 +162,26 @@ const DatabaseSearchManager: React.FC = () => {
   const handleCustomerFilterChange = (customer: Customer | null) => {
     setSelectedCustomerFilter(customer);
     setCurrentPage(1);
+  };
+
+  const handleDownloadDocument = async (document: Document) => {
+    try {
+      console.log('📥 Starting secure download for:', document.file_name);
+      
+      // Show loading state (optional)
+      const success = await secureDownloadService.downloadDocument(document.id);
+      
+      if (success) {
+        console.log('✅ Download initiated successfully');
+        // Optional: Show success message
+      } else {
+        console.error('❌ Download failed');
+        setError('Kunne ikke laste ned dokumentet. Prøv igjen.');
+      }
+    } catch (error) {
+      console.error('❌ Error downloading document:', error);
+      setError('Feil ved nedlasting av dokument. Prøv igjen.');
+    }
   };
 
   return (
@@ -508,17 +529,24 @@ const DatabaseSearchManager: React.FC = () => {
                       <td className="px-6 py-6 text-sm">
                         <div>{document.createdate ? new Date(document.createdate).toLocaleDateString('no-NO') : '-'}</div>
                       </td>
-                      <td className="px-6 py-6 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => setSelectedDocument(document)}
-                            className="text-blue-600 hover:text-blue-900"
-                            title="Se detaljer"
-                          >
-                            <Eye size={16} />
-                          </button>
-                        </div>
-                      </td>
+                    <td className="px-6 py-6 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => setSelectedDocument(document)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Se detaljer"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDownloadDocument(document)}
+                          className="text-green-600 hover:text-green-900"
+                          title="Last ned dokument"
+                        >
+                          <Download size={16} />
+                        </button>
+                      </div>
+                    </td>
                     </tr>
                   ))
                 )}

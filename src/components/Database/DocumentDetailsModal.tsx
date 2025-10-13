@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { X, FileText, Calendar, User, Hash, AlignLeft } from 'lucide-react';
+import { X, FileText, Calendar, User, Hash, AlignLeft, Download } from 'lucide-react';
 import { databaseSearchService } from '../../utils/databaseSearchService';
+import { secureDownloadService } from '../../utils/secureDownloadService';
 import type { Document, DocumentEmbedding } from '../../types/database';
 
 interface DocumentDetailsModalProps {
@@ -59,6 +60,22 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
       console.error('Error loading embeddings:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    try {
+      console.log('📥 Downloading document from modal:', document.file_name);
+      const success = await secureDownloadService.downloadDocument(document.id);
+      
+      if (success) {
+        console.log('✅ Download initiated from modal');
+      } else {
+        console.error('❌ Download failed from modal');
+        // Could show error message here
+      }
+    } catch (error) {
+      console.error('❌ Error downloading from modal:', error);
     }
   };
 
@@ -341,11 +358,29 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 p-4 sm:p-6 sticky bottom-0" 
+        <div className="flex items-center justify-between p-4 sm:p-6 sticky bottom-0" 
           style={{ 
             borderTop: '1px solid rgb(var(--border))', 
             backgroundColor: 'rgb(var(--muted))' 
           }}>
+          <button
+            onClick={handleDownload}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm sm:text-base transition-all duration-200"
+            style={{ 
+              backgroundColor: 'rgb(var(--green-600))',
+              color: 'white'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgb(var(--green-700))';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgb(var(--green-600))';
+            }}
+          >
+            <Download size={16} />
+            Last Ned
+          </button>
+          
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-sm sm:text-base transition-all duration-200"
