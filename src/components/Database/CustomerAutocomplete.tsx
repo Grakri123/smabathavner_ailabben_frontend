@@ -7,13 +7,15 @@ interface CustomerAutocompleteProps {
   selectedCustomer: Customer | null;
   onSelect: (customer: Customer | null) => void;
   placeholder?: string;
+  isLoading?: boolean;
 }
 
 const CustomerAutocomplete: React.FC<CustomerAutocompleteProps> = ({
   customers,
   selectedCustomer,
   onSelect,
-  placeholder = 'Søk etter kunde...'
+  placeholder = 'Søk etter kunde...',
+  isLoading = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +27,18 @@ const CustomerAutocomplete: React.FC<CustomerAutocompleteProps> = ({
     customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (customer.customer_number && customer.customer_number.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  // Debug logging
+  useEffect(() => {
+    if (searchTerm && searchTerm.length > 0) {
+      console.log('🔍 Autocomplete search:', {
+        searchTerm,
+        totalCustomers: customers.length,
+        filteredCount: filteredCustomers.length,
+        filteredNames: filteredCustomers.map(c => c.name).slice(0, 5)
+      });
+    }
+  }, [searchTerm, filteredCustomers.length, customers.length]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -120,6 +134,20 @@ const CustomerAutocomplete: React.FC<CustomerAutocompleteProps> = ({
         </div>
       )}
 
+      {/* Loading indicator */}
+      {isLoading && (
+        <div className="mt-2 text-xs" style={{ color: 'rgb(var(--muted-foreground))' }}>
+          Laster kunder... ({customers.length} lastet)
+        </div>
+      )}
+
+      {/* Debug info */}
+      {customers.length === 0 && !isLoading && (
+        <div className="mt-2 text-xs text-red-600">
+          ⚠️ Ingen kunder lastet fra database
+        </div>
+      )}
+
       {/* Dropdown suggestions */}
       {isOpen && !selectedCustomer && (
         <div 
@@ -130,7 +158,13 @@ const CustomerAutocomplete: React.FC<CustomerAutocompleteProps> = ({
             maxHeight: '300px'
           }}
         >
-          {filteredCustomers.length === 0 ? (
+          {isLoading ? (
+            <div className="px-4 py-3 text-sm text-center" style={{ color: 'rgb(var(--muted-foreground))' }}>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 mx-auto mb-2" 
+                style={{ borderColor: 'rgb(var(--orange-primary))' }}></div>
+              Laster kunder...
+            </div>
+          ) : filteredCustomers.length === 0 ? (
             <div className="px-4 py-3 text-sm text-center" style={{ color: 'rgb(var(--muted-foreground))' }}>
               Ingen kunder funnet for "{searchTerm}"
             </div>

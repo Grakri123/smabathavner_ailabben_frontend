@@ -13,6 +13,7 @@ const DatabaseSearchManager: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [allCustomers, setAllCustomers] = useState<Customer[]>([]);
+  const [loadingCustomers, setLoadingCustomers] = useState(false);
   const [selectedCustomerFilter, setSelectedCustomerFilter] = useState<Customer | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -74,10 +75,16 @@ const DatabaseSearchManager: React.FC = () => {
 
   const loadAllCustomers = async () => {
     try {
+      setLoadingCustomers(true);
+      console.log('🔄 Loading all customers for autocomplete...');
       const customersList = await databaseSearchService.getAllCustomers();
+      console.log('✅ Loaded customers for autocomplete:', customersList.length, 'customers');
+      console.log('📋 Customer names:', customersList.map(c => c.name).slice(0, 10));
       setAllCustomers(customersList);
     } catch (err) {
-      console.error('Error loading customers list:', err);
+      console.error('❌ Error loading customers list:', err);
+    } finally {
+      setLoadingCustomers(false);
     }
   };
 
@@ -335,6 +342,7 @@ const DatabaseSearchManager: React.FC = () => {
                   selectedCustomer={selectedCustomerFilter}
                   onSelect={handleCustomerFilterChange}
                   placeholder="Filtrer på kunde..."
+                  isLoading={loadingCustomers}
                 />
               </div>
             )}

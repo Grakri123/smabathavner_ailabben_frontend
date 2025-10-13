@@ -104,16 +104,28 @@ class DatabaseSearchService {
   // Get all customers (for dropdown filter)
   async getAllCustomers(): Promise<Customer[]> {
     try {
+      console.log('📞 DatabaseSearchService: Fetching all customers from Supabase...');
+      
       const { data, error } = await supabase
         .from('customers')
         .select('*')
         .order('name');
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Supabase error fetching customers:', error);
+        throw error;
+      }
+
+      console.log('✅ DatabaseSearchService: Fetched customers:', {
+        count: data?.length || 0,
+        firstFive: data?.slice(0, 5).map(c => ({ name: c.name, number: c.customer_number }))
+      });
+
       return data as Customer[];
     } catch (error) {
-      console.error('Error fetching customers:', error);
-      throw error;
+      console.error('❌ Error fetching customers:', error);
+      // Return empty array instead of throwing to prevent UI break
+      return [];
     }
   }
 
