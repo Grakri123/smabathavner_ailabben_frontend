@@ -463,19 +463,22 @@ const DatabaseSearchManager: React.FC = () => {
             <table className="w-full table-fixed" style={{ borderColor: 'rgb(var(--border))' }}>
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/3" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Filnavn
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/5" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Kunde
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Vår Ref
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                    Metode
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Opprettet
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger
                   </th>
                 </tr>
@@ -483,7 +486,7 @@ const DatabaseSearchManager: React.FC = () => {
               <tbody style={{ borderColor: 'rgb(var(--border))' }}>
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
+                    <td colSpan={6} className="px-6 py-12 text-center">
                       <div className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2" style={{ borderColor: 'rgb(var(--orange-primary))' }}></div>
                         <span className="ml-2" style={{ color: 'rgb(var(--foreground))' }}>Laster...</span>
@@ -492,7 +495,7 @@ const DatabaseSearchManager: React.FC = () => {
                   </tr>
                 ) : documents.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
+                    <td colSpan={6} className="px-6 py-12 text-center">
                       <FileText className="mx-auto h-12 w-12" style={{ color: 'rgb(var(--muted-foreground))' }} />
                       <h3 className="mt-2 text-sm font-medium" style={{ color: 'rgb(var(--foreground))' }}>
                         Ingen dokumenter funnet
@@ -527,6 +530,19 @@ const DatabaseSearchManager: React.FC = () => {
                       </td>
                       <td className="px-6 py-6 text-sm">
                         <div className="font-mono text-xs truncate">{document.ourref || '-'}</div>
+                      </td>
+                      <td className="px-6 py-6 text-sm">
+                        <div className="truncate">
+                          {document.opplastnings_metode ? (
+                            <span className="px-2 py-1 rounded text-xs" 
+                              style={{ 
+                                backgroundColor: 'rgb(var(--muted))',
+                                color: 'rgb(var(--foreground))'
+                              }}>
+                              {document.opplastnings_metode}
+                            </span>
+                          ) : '-'}
+                        </div>
                       </td>
                       <td className="px-6 py-6 text-sm">
                         <div>{document.createdate ? new Date(document.createdate).toLocaleDateString('no-NO') : '-'}</div>

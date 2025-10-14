@@ -16,6 +16,7 @@ export interface Document {
   editdate: string | null;
   createdate: string | null;
   uploaded_at: string | null;
+  opplastnings_metode: string | null;
   // Joined data
   customer_name?: string;
 }

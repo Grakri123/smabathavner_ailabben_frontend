@@ -187,6 +187,29 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
               </div>
 
               <div className="flex items-start gap-3">
+                <FileText size={16} className="mt-1 flex-shrink-0" 
+                  style={{ color: 'rgb(var(--muted-foreground))' }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}>
+                    Opplastningsmetode
+                  </p>
+                  <p className="text-sm break-words" 
+                    style={{ color: 'rgb(var(--foreground))' }}>
+                    {document.opplastnings_metode ? (
+                      <span className="px-2 py-1 rounded text-xs" 
+                        style={{ 
+                          backgroundColor: 'rgb(var(--muted))',
+                          color: 'rgb(var(--foreground))'
+                        }}>
+                        {document.opplastnings_metode}
+                      </span>
+                    ) : '-'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
                 <Calendar size={16} className="mt-1 flex-shrink-0" 
                   style={{ color: 'rgb(var(--muted-foreground))' }} />
                 <div className="flex-1 min-w-0">

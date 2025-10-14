@@ -232,17 +232,26 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ document, onClose, onDownlo
             backgroundColor: 'rgb(var(--muted))'
           }}
         >
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between text-sm flex-wrap gap-2">
+            <div className="flex items-center gap-4 flex-wrap">
               <span style={{ color: 'rgb(var(--muted-foreground))' }}>
-                <strong>Kunde:</strong> {document.customer_name}
+                <strong>Kunde:</strong> {document.customer_name || 'Ukjent'}
               </span>
-              <span style={{ color: 'rgb(var(--muted-foreground))' }}>
-                <strong>Type:</strong> {document.document_type || 'Ukjent'}
-              </span>
+              {document.opplastnings_metode && (
+                <span style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <strong>Metode:</strong>{' '}
+                  <span className="px-2 py-0.5 rounded text-xs" 
+                    style={{ 
+                      backgroundColor: 'rgb(var(--card))',
+                      color: 'rgb(var(--foreground))'
+                    }}>
+                    {document.opplastnings_metode}
+                  </span>
+                </span>
+              )}
             </div>
             <span style={{ color: 'rgb(var(--muted-foreground))' }}>
-              Opprettet: {new Date(document.created_at).toLocaleString('nb-NO')}
+              Opprettet: {document.createdate ? new Date(document.createdate).toLocaleString('nb-NO') : 'Ukjent'}
             </span>
           </div>
         </div>
