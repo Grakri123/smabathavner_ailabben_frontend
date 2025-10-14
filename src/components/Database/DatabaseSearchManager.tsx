@@ -4,6 +4,7 @@ import { databaseSearchService } from '../../utils/databaseSearchService';
 import { secureDownloadService } from '../../utils/secureDownloadService';
 import type { Customer, Document, SearchStats } from '../../types/database';
 import DocumentDetailsModal from './DocumentDetailsModal';
+import PreviewModal from './PreviewModal';
 import CustomerAutocomplete from './CustomerAutocomplete';
 
 type SearchTab = 'customers' | 'documents';
@@ -17,6 +18,7 @@ const DatabaseSearchManager: React.FC = () => {
   const [loadingCustomers, setLoadingCustomers] = useState(false);
   const [selectedCustomerFilter, setSelectedCustomerFilter] = useState<Customer | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -532,9 +534,9 @@ const DatabaseSearchManager: React.FC = () => {
                     <td className="px-6 py-6 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => setSelectedDocument(document)}
+                          onClick={() => setPreviewDocument(document)}
                           className="text-blue-600 hover:text-blue-900"
-                          title="Se detaljer"
+                          title="Forhåndsvisning"
                         >
                           <Eye size={16} />
                         </button>
@@ -602,6 +604,15 @@ const DatabaseSearchManager: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Preview Modal */}
+      {previewDocument && (
+        <PreviewModal
+          document={previewDocument}
+          onClose={() => setPreviewDocument(null)}
+          onDownload={() => handleDownloadDocument(previewDocument)}
+        />
+      )}
 
       {/* Document Details Modal */}
       {selectedDocument && (

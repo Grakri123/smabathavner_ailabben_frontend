@@ -13,10 +13,11 @@ class SecureDownloadService {
   // Generate secure download token
   async generateDownloadToken(
     documentId: string, 
-    expiresInMinutes: number = this.TOKEN_EXPIRY_MINUTES
+    expiresInMinutes: number = this.TOKEN_EXPIRY_MINUTES,
+    actionType: 'download' | 'preview' = 'download'
   ): Promise<GenerateTokenResponse> {
     try {
-      console.log('🔐 Generating secure download token for document:', documentId);
+      console.log(`🔐 Generating secure ${actionType} token for document:`, documentId);
       
       // Get current user
       const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -28,36 +29,38 @@ class SecureDownloadService {
       const { data, error } = await supabase.rpc('generate_secure_download_token', {
         p_document_id: documentId,
         p_user_id: user.email || user.id,
-        p_expires_in_minutes: expiresInMinutes
+        p_expires_in_minutes: expiresInMinutes,
+        p_action_type: actionType
       });
 
       if (error) {
-        console.error('❌ Error generating download token:', error);
+        console.error(`❌ Error generating ${actionType} token:`, error);
         throw error;
       }
 
       const token = data;
-      const downloadUrl = `${this.API_BASE_URL}/api/download?token=${token}`;
+      const endpoint = actionType === 'preview' ? '/api/preview' : '/api/download';
+      const url = `${this.API_BASE_URL}${endpoint}?token=${token}`;
       const expiresAt = new Date(Date.now() + expiresInMinutes * 60 * 1000).toISOString();
 
-      console.log('✅ Download token generated:', {
+      console.log(`✅ ${actionType} token generated:`, {
         token: token.substring(0, 20) + '...',
         expiresAt,
-        downloadUrl
+        url
       });
 
       return {
         success: true,
         token,
-        download_url: downloadUrl,
+        download_url: url,
         expires_at: expiresAt
       };
 
     } catch (error) {
-      console.error('❌ Error in generateDownloadToken:', error);
+      console.error(`❌ Error in generateDownloadToken (${actionType}):`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to generate download token'
+        error: error instanceof Error ? error.message : 'Failed to generate token'
       };
     }
   }
@@ -103,8 +106,8 @@ class SecureDownloadService {
     try {
       console.log('📥 Starting secure download for document:', documentId);
       
-      // Generate secure token
-      const tokenResponse = await this.generateDownloadToken(documentId);
+      // Generate secure token for download
+      const tokenResponse = await this.generateDownloadToken(documentId, this.TOKEN_EXPIRY_MINUTES, 'download');
       
       if (!tokenResponse.success || !tokenResponse.download_url) {
         throw new Error(tokenResponse.error || 'Failed to generate download token');
@@ -128,6 +131,27 @@ class SecureDownloadService {
     } catch (error) {
       console.error('❌ Error downloading document:', error);
       return false;
+    }
+  }
+
+  // Generate preview URL for a document
+  async generatePreviewUrl(documentId: string, expiresInMinutes: number = 5): Promise<string | null> {
+    try {
+      console.log('👁️ Generating preview URL for document:', documentId);
+      
+      // Generate secure token for preview (shorter expiry)
+      const tokenResponse = await this.generateDownloadToken(documentId, expiresInMinutes, 'preview');
+      
+      if (!tokenResponse.success || !tokenResponse.download_url) {
+        throw new Error(tokenResponse.error || 'Failed to generate preview token');
+      }
+
+      console.log('✅ Preview URL generated:', tokenResponse.download_url.substring(0, 50) + '...');
+      return tokenResponse.download_url;
+
+    } catch (error) {
+      console.error('❌ Error generating preview URL:', error);
+      return null;
     }
   }
 
