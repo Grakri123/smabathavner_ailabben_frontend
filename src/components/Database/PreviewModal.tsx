@@ -197,13 +197,15 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ document, onClose, onDownlo
           )}
 
           {!loading && !error && previewUrl && isPDF && (
-            <div className="w-full h-full min-h-[600px]">
+            <div className="w-full h-full flex items-center justify-center">
               <iframe
                 src={previewUrl}
-                className="w-full h-full rounded-lg border"
+                className="w-full rounded-lg border"
                 style={{ 
                   borderColor: 'rgb(var(--border))',
-                  minHeight: '600px'
+                  height: 'calc(100vh - 200px)', // Dynamic height based on viewport
+                  minHeight: '700px', // Increased minimum height
+                  maxHeight: '80vh' // Maximum height to prevent overflow
                 }}
                 title={`Preview: ${document.file_name}`}
               />
