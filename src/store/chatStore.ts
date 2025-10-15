@@ -26,7 +26,7 @@ const agents: Agent[] = [
     description: 'Smart orkester som koordinerer alle dine AI-agenter',
     icon: '🎯',
     color: 'bg-purple-500',
-    n8nEndpoint: '376118ea-b971-4c3a-9b38-564426cb0d41' // n8n AI assistant webhook
+    n8nEndpoint: '1dc51de4-5c99-454e-a75d-3b10fd9be8eb' // n8n AI assistant webhook
   },
   // SEO Agent and Chat Agent are hidden for this customer
   // {
