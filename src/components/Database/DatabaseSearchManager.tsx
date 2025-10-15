@@ -542,7 +542,7 @@ const DatabaseSearchManager: React.FC = () => {
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
                   <th 
-                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-2/5 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('file_name')}
                   >
@@ -551,11 +551,11 @@ const DatabaseSearchManager: React.FC = () => {
                       {getSortIcon('file_name')}
                     </div>
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/4" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Kunde
                   </th>
                   <th 
-                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/12 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('ourref')}
                   >
@@ -565,7 +565,7 @@ const DatabaseSearchManager: React.FC = () => {
                     </div>
                   </th>
                   <th 
-                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/12 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('opplastnings_metode')}
                   >
@@ -575,7 +575,7 @@ const DatabaseSearchManager: React.FC = () => {
                     </div>
                   </th>
                   <th 
-                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/12 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('createdate')}
                   >
@@ -584,7 +584,7 @@ const DatabaseSearchManager: React.FC = () => {
                       {getSortIcon('createdate')}
                     </div>
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/12" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger
                   </th>
                 </tr>
@@ -627,12 +627,12 @@ const DatabaseSearchManager: React.FC = () => {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }}>
                       <td className="px-4 py-3">
-                        <div className="text-sm font-medium truncate" title={document.file_name}>
+                        <div className="text-sm font-medium" title={document.file_name}>
                           {document.file_name}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <div className="truncate">{document.customer_name || '-'}</div>
+                        <div>{document.customer_name || '-'}</div>
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <div className="font-mono text-xs truncate">{document.ourref || '-'}</div>
