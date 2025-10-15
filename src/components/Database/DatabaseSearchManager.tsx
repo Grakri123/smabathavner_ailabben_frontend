@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Database, FileText, Users, Eye, RefreshCw, AlertCircle, FolderOpen, Download } from 'lucide-react';
+import { Search, Database, FileText, Users, Eye, RefreshCw, AlertCircle, FolderOpen, Download, ChevronUp, ChevronDown } from 'lucide-react';
 import { databaseSearchService } from '../../utils/databaseSearchService';
 import { secureDownloadService } from '../../utils/secureDownloadService';
 import type { Customer, Document, SearchStats } from '../../types/database';
@@ -8,6 +8,14 @@ import PreviewModal from './PreviewModal';
 import CustomerAutocomplete from './CustomerAutocomplete';
 
 type SearchTab = 'customers' | 'documents';
+
+type SortField = 'name' | 'customer_number' | 'created_at' | 'file_name' | 'ourref' | 'opplastnings_metode' | 'createdate';
+type SortDirection = 'asc' | 'desc';
+
+interface SortConfig {
+  field: SortField;
+  direction: SortDirection;
+}
 
 const DatabaseSearchManager: React.FC = () => {
   const [activeTab, setActiveTab] = useState<SearchTab>('customers');
@@ -24,6 +32,10 @@ const DatabaseSearchManager: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    field: 'created_at',
+    direction: 'desc'
+  });
   const [stats, setStats] = useState<SearchStats>({
     totalCustomers: 0,
     totalDocuments: 0,
@@ -47,6 +59,11 @@ const DatabaseSearchManager: React.FC = () => {
     setSearchTerm('');
     setSelectedCustomerFilter(null);
     setCurrentPage(1);
+    // Reset sort config when switching tabs
+    setSortConfig({
+      field: activeTab === 'customers' ? 'created_at' : 'createdate',
+      direction: 'desc'
+    });
     if (activeTab === 'customers') {
       searchCustomers(1);
     } else {
@@ -66,6 +83,15 @@ const DatabaseSearchManager: React.FC = () => {
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm, selectedCustomerFilter]);
+
+  // Search when sort config changes
+  useEffect(() => {
+    if (activeTab === 'customers') {
+      searchCustomers(currentPage);
+    } else {
+      searchDocuments(currentPage);
+    }
+  }, [sortConfig]);
 
   const loadStats = async () => {
     try {
@@ -99,7 +125,9 @@ const DatabaseSearchManager: React.FC = () => {
       const response = await databaseSearchService.searchCustomers(
         searchTerm,
         page,
-        10
+        10,
+        sortConfig.field as 'name' | 'customer_number' | 'created_at',
+        sortConfig.direction
       );
       
       setCustomers(response.data);
@@ -123,7 +151,9 @@ const DatabaseSearchManager: React.FC = () => {
         searchTerm,
         selectedCustomerFilter?.id || undefined,
         page,
-        10
+        10,
+        sortConfig.field as 'file_name' | 'ourref' | 'opplastnings_metode' | 'createdate',
+        sortConfig.direction
       );
       
       setDocuments(response.data);
@@ -164,6 +194,33 @@ const DatabaseSearchManager: React.FC = () => {
   const handleCustomerFilterChange = (customer: Customer | null) => {
     setSelectedCustomerFilter(customer);
     setCurrentPage(1);
+  };
+
+  const handleSort = (field: SortField) => {
+    setSortConfig(prevConfig => {
+      // If clicking the same field, toggle direction
+      if (prevConfig.field === field) {
+        return {
+          field,
+          direction: prevConfig.direction === 'asc' ? 'desc' : 'asc'
+        };
+      }
+      // If clicking a different field, start with ascending
+      return {
+        field,
+        direction: 'asc'
+      };
+    });
+    setCurrentPage(1); // Reset to first page when sorting
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortConfig.field !== field) {
+      return null; // No icon if not the active sort field
+    }
+    return sortConfig.direction === 'asc' ? 
+      <ChevronUp size={14} className="ml-1" /> : 
+      <ChevronDown size={14} className="ml-1" />;
   };
 
   const handleDownloadDocument = async (document: Document) => {
@@ -385,14 +442,29 @@ const DatabaseSearchManager: React.FC = () => {
             <table className="w-full table-fixed" style={{ borderColor: 'rgb(var(--border))' }}>
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/3" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/3 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}
+                    onClick={() => handleSort('name')}
+                  >
                     Kundenavn
+                    {getSortIcon('name')}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}
+                    onClick={() => handleSort('customer_number')}
+                  >
                     Kundenummer
+                    {getSortIcon('customer_number')}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}
+                    onClick={() => handleSort('created_at')}
+                  >
                     Opprettet
+                    {getSortIcon('created_at')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger
@@ -463,20 +535,40 @@ const DatabaseSearchManager: React.FC = () => {
             <table className="w-full table-fixed" style={{ borderColor: 'rgb(var(--border))' }}>
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}
+                    onClick={() => handleSort('file_name')}
+                  >
                     Filnavn
+                    {getSortIcon('file_name')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Kunde
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}
+                    onClick={() => handleSort('ourref')}
+                  >
                     Vår Ref
+                    {getSortIcon('ourref')}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}
+                    onClick={() => handleSort('opplastnings_metode')}
+                  >
                     Metode
+                    {getSortIcon('opplastnings_metode')}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    style={{ color: 'rgb(var(--muted-foreground))' }}
+                    onClick={() => handleSort('createdate')}
+                  >
                     Opprettet
+                    {getSortIcon('createdate')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger

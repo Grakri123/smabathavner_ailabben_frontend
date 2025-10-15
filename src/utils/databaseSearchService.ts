@@ -12,7 +12,9 @@ class DatabaseSearchService {
   async searchCustomers(
     searchTerm: string,
     page = 1,
-    pageSize = 10
+    pageSize = 10,
+    sortField: 'name' | 'customer_number' | 'created_at' = 'created_at',
+    sortDirection: 'asc' | 'desc' = 'desc'
   ): Promise<PaginatedSearchResponse<Customer>> {
     try {
       let query = supabase
@@ -29,7 +31,7 @@ class DatabaseSearchService {
       const to = from + pageSize - 1;
 
       const { data, error, count } = await query
-        .order('created_at', { ascending: false })
+        .order(sortField, { ascending: sortDirection === 'asc' })
         .range(from, to);
 
       if (error) throw error;
@@ -52,10 +54,12 @@ class DatabaseSearchService {
     searchTerm: string,
     customerFilter?: string,
     page = 1,
-    pageSize = 10
+    pageSize = 10,
+    sortField: 'file_name' | 'ourref' | 'opplastnings_metode' | 'createdate' = 'createdate',
+    sortDirection: 'asc' | 'desc' = 'desc'
   ): Promise<PaginatedSearchResponse<Document>> {
     try {
-      console.log('🔍 Searching documents from both tables:', { searchTerm, customerFilter, page, pageSize });
+      console.log('🔍 Searching documents from both tables:', { searchTerm, customerFilter, page, pageSize, sortField, sortDirection });
 
       // Build search conditions
       let searchConditions = '';
@@ -83,13 +87,15 @@ class DatabaseSearchService {
         search_term: searchTerm || '',
         customer_filter: customerFilter || null,
         page_offset: (page - 1) * pageSize,
-        page_limit: pageSize
+        page_limit: pageSize,
+        sort_field: sortField,
+        sort_direction: sortDirection
       });
 
       if (error) {
         console.error('❌ RPC error, falling back to individual queries:', error);
         // Fallback to individual queries if RPC doesn't exist
-        return await this.searchDocumentsFallback(searchTerm, customerFilter, page, pageSize);
+        return await this.searchDocumentsFallback(searchTerm, customerFilter, page, pageSize, sortField, sortDirection);
       }
 
       console.log('✅ Union search results:', { count: data?.length, totalCount: count });
@@ -112,7 +118,9 @@ class DatabaseSearchService {
     searchTerm: string,
     customerFilter?: string,
     page = 1,
-    pageSize = 10
+    pageSize = 10,
+    sortField: 'file_name' | 'ourref' | 'opplastnings_metode' | 'createdate' = 'createdate',
+    sortDirection: 'asc' | 'desc' = 'desc'
   ): Promise<PaginatedSearchResponse<Document>> {
     try {
       console.log('🔄 Using fallback search method');
@@ -145,10 +153,10 @@ class DatabaseSearchService {
         outlookQuery = outlookQuery.eq('customer_id', customerFilter);
       }
 
-      // Execute both queries
+      // Execute both queries with sorting
       const [documentsResult, outlookResult] = await Promise.all([
-        documentsQuery.order('uploaded_at', { ascending: false }),
-        outlookQuery.order('uploaded_at', { ascending: false })
+        documentsQuery.order(sortField === 'createdate' ? 'uploaded_at' : sortField, { ascending: sortDirection === 'asc' }),
+        outlookQuery.order(sortField === 'createdate' ? 'uploaded_at' : sortField, { ascending: sortDirection === 'asc' })
       ]);
 
       if (documentsResult.error) throw documentsResult.error;
@@ -168,10 +176,38 @@ class DatabaseSearchService {
         })) || [])
       ];
 
-      // Sort combined results by uploaded_at
-      allDocuments.sort((a, b) => 
-        new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime()
-      );
+      // Sort combined results by the specified field
+      allDocuments.sort((a, b) => {
+        let aValue, bValue;
+        
+        switch (sortField) {
+          case 'file_name':
+            aValue = a.file_name || '';
+            bValue = b.file_name || '';
+            break;
+          case 'ourref':
+            aValue = a.ourref || '';
+            bValue = b.ourref || '';
+            break;
+          case 'opplastnings_metode':
+            aValue = a.opplastnings_metode || '';
+            bValue = b.opplastnings_metode || '';
+            break;
+          case 'createdate':
+          default:
+            aValue = new Date(a.uploaded_at || a.createdate || 0).getTime();
+            bValue = new Date(b.uploaded_at || b.createdate || 0).getTime();
+            break;
+        }
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          const comparison = aValue.localeCompare(bValue);
+          return sortDirection === 'asc' ? comparison : -comparison;
+        } else {
+          const comparison = aValue - bValue;
+          return sortDirection === 'asc' ? comparison : -comparison;
+        }
+      });
 
       // Apply pagination
       const totalCount = allDocuments.length;
