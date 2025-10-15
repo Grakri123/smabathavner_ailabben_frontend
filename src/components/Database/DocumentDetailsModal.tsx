@@ -194,8 +194,7 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
                     style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Opplastningsmetode
                   </p>
-                  <p className="text-sm break-words" 
-                    style={{ color: 'rgb(var(--foreground))' }}>
+                  <div className="flex flex-col gap-2">
                     {document.opplastnings_metode ? (
                       <span className="px-2 py-1 rounded text-xs" 
                         style={{ 
@@ -205,7 +204,20 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
                         {document.opplastnings_metode}
                       </span>
                     ) : '-'}
-                  </p>
+                    {document.source && (
+                      <span className="px-2 py-1 rounded text-xs" 
+                        style={{ 
+                          backgroundColor: document.source === 'documents_outlook' 
+                            ? 'rgb(var(--blue-100))' 
+                            : 'rgb(var(--green-100))',
+                          color: document.source === 'documents_outlook' 
+                            ? 'rgb(var(--blue-700))' 
+                            : 'rgb(var(--green-700))'
+                        }}>
+                        Kilde: {document.source === 'documents_outlook' ? 'Outlook' : 'Standard'}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 

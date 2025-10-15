@@ -19,6 +19,8 @@ export interface Document {
   opplastnings_metode: string | null;
   // Joined data
   customer_name?: string;
+  // Source table indicator (for union search)
+  source?: 'documents' | 'documents_outlook';
 }
 
 export interface DocumentEmbedding {

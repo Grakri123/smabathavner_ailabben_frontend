@@ -534,13 +534,28 @@ const DatabaseSearchManager: React.FC = () => {
                       <td className="px-6 py-6 text-sm">
                         <div className="truncate">
                           {document.opplastnings_metode ? (
-                            <span className="px-2 py-1 rounded text-xs" 
-                              style={{ 
-                                backgroundColor: 'rgb(var(--muted))',
-                                color: 'rgb(var(--foreground))'
-                              }}>
-                              {document.opplastnings_metode}
-                            </span>
+                            <div className="flex flex-col gap-1">
+                              <span className="px-2 py-1 rounded text-xs" 
+                                style={{ 
+                                  backgroundColor: 'rgb(var(--muted))',
+                                  color: 'rgb(var(--foreground))'
+                                }}>
+                                {document.opplastnings_metode}
+                              </span>
+                              {document.source && (
+                                <span className="px-1 py-0.5 rounded text-xs" 
+                                  style={{ 
+                                    backgroundColor: document.source === 'documents_outlook' 
+                                      ? 'rgb(var(--blue-100))' 
+                                      : 'rgb(var(--green-100))',
+                                    color: document.source === 'documents_outlook' 
+                                      ? 'rgb(var(--blue-700))' 
+                                      : 'rgb(var(--green-700))'
+                                  }}>
+                                  {document.source === 'documents_outlook' ? 'Outlook' : 'Standard'}
+                                </span>
+                              )}
+                            </div>
                           ) : '-'}
                         </div>
                       </td>

@@ -47,7 +47,7 @@ class DatabaseSearchService {
     }
   }
 
-  // Search documents by filename, ourref, or customer
+  // Search documents by filename, ourref, or customer (from both documents and documents_outlook tables)
   async searchDocuments(
     searchTerm: string,
     customerFilter?: string,
@@ -55,41 +55,47 @@ class DatabaseSearchService {
     pageSize = 10
   ): Promise<PaginatedSearchResponse<Document>> {
     try {
-      let query = supabase
-        .from('documents')
-        .select(`
-          *,
-          customer:customers(name)
-        `, { count: 'exact' });
+      console.log('🔍 Searching documents from both tables:', { searchTerm, customerFilter, page, pageSize });
 
-      // Apply search filter
+      // Build search conditions
+      let searchConditions = '';
       if (searchTerm) {
-        query = query.or(`file_name.ilike.%${searchTerm}%,ourref.ilike.%${searchTerm}%`);
+        searchConditions = `file_name.ilike.%${searchTerm}%,ourref.ilike.%${searchTerm}%`;
       }
 
-      // Filter by customer if specified
+      // Build customer filter condition
+      let customerCondition = '';
       if (customerFilter) {
-        query = query.eq('customer_id', customerFilter);
+        customerCondition = `customer_id.eq.${customerFilter}`;
       }
 
-      // Apply sorting and pagination
-      const from = (page - 1) * pageSize;
-      const to = from + pageSize - 1;
+      // Combine conditions
+      let whereConditions = [];
+      if (searchConditions) whereConditions.push(searchConditions);
+      if (customerCondition) whereConditions.push(customerCondition);
+      
+      const whereClause = whereConditions.length > 0 ? whereConditions.join(',') : '';
 
-      const { data, error, count } = await query
-        .order('uploaded_at', { ascending: false })
-        .range(from, to);
+      console.log('📋 Search conditions:', { whereClause });
 
-      if (error) throw error;
+      // Use RPC function to search both tables with UNION
+      const { data, error, count } = await supabase.rpc('search_documents_union', {
+        search_term: searchTerm || '',
+        customer_filter: customerFilter || null,
+        page_offset: (page - 1) * pageSize,
+        page_limit: pageSize
+      });
 
-      // Transform data to include customer_name
-      const transformedData = data?.map((doc: any) => ({
-        ...doc,
-        customer_name: doc.customer?.name || null
-      })) || [];
+      if (error) {
+        console.error('❌ RPC error, falling back to individual queries:', error);
+        // Fallback to individual queries if RPC doesn't exist
+        return await this.searchDocumentsFallback(searchTerm, customerFilter, page, pageSize);
+      }
+
+      console.log('✅ Union search results:', { count: data?.length, totalCount: count });
 
       return {
-        data: transformedData as Document[],
+        data: data as Document[],
         count: count || 0,
         page,
         pageSize,
@@ -97,6 +103,98 @@ class DatabaseSearchService {
       };
     } catch (error) {
       console.error('Error searching documents:', error);
+      throw error;
+    }
+  }
+
+  // Fallback method using individual queries
+  private async searchDocumentsFallback(
+    searchTerm: string,
+    customerFilter?: string,
+    page = 1,
+    pageSize = 10
+  ): Promise<PaginatedSearchResponse<Document>> {
+    try {
+      console.log('🔄 Using fallback search method');
+
+      // Search documents table
+      let documentsQuery = supabase
+        .from('documents')
+        .select(`
+          *,
+          customer:customers(name)
+        `, { count: 'exact' });
+
+      // Search documents_outlook table
+      let outlookQuery = supabase
+        .from('documents_outlook')
+        .select(`
+          *,
+          customer:customers(name)
+        `, { count: 'exact' });
+
+      // Apply search filter to both
+      if (searchTerm) {
+        documentsQuery = documentsQuery.or(`file_name.ilike.%${searchTerm}%,ourref.ilike.%${searchTerm}%`);
+        outlookQuery = outlookQuery.or(`file_name.ilike.%${searchTerm}%,ourref.ilike.%${searchTerm}%`);
+      }
+
+      // Apply customer filter to both
+      if (customerFilter) {
+        documentsQuery = documentsQuery.eq('customer_id', customerFilter);
+        outlookQuery = outlookQuery.eq('customer_id', customerFilter);
+      }
+
+      // Execute both queries
+      const [documentsResult, outlookResult] = await Promise.all([
+        documentsQuery.order('uploaded_at', { ascending: false }),
+        outlookQuery.order('uploaded_at', { ascending: false })
+      ]);
+
+      if (documentsResult.error) throw documentsResult.error;
+      if (outlookResult.error) throw outlookResult.error;
+
+      // Combine results
+      const allDocuments = [
+        ...(documentsResult.data?.map((doc: any) => ({
+          ...doc,
+          customer_name: doc.customer?.name || null,
+          source: 'documents'
+        })) || []),
+        ...(outlookResult.data?.map((doc: any) => ({
+          ...doc,
+          customer_name: doc.customer?.name || null,
+          source: 'documents_outlook'
+        })) || [])
+      ];
+
+      // Sort combined results by uploaded_at
+      allDocuments.sort((a, b) => 
+        new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime()
+      );
+
+      // Apply pagination
+      const totalCount = allDocuments.length;
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedData = allDocuments.slice(startIndex, endIndex);
+
+      console.log('✅ Fallback search results:', { 
+        totalCount, 
+        paginatedCount: paginatedData.length,
+        page,
+        totalPages: Math.ceil(totalCount / pageSize)
+      });
+
+      return {
+        data: paginatedData as Document[],
+        count: totalCount,
+        page,
+        pageSize,
+        totalPages: Math.ceil(totalCount / pageSize)
+      };
+    } catch (error) {
+      console.error('Error in fallback search:', error);
       throw error;
     }
   }
@@ -196,6 +294,21 @@ class DatabaseSearchService {
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
 
+      // Try to find document in both tables to determine source
+      const [documentsResult, outlookResult] = await Promise.all([
+        supabase.from('documents').select('id').eq('id', documentId).single(),
+        supabase.from('documents_outlook').select('id').eq('id', documentId).single()
+      ]);
+
+      // Determine which table the document is in
+      const isInDocuments = !documentsResult.error && documentsResult.data;
+      const isInOutlook = !outlookResult.error && outlookResult.data;
+
+      if (!isInDocuments && !isInOutlook) {
+        throw new Error('Document not found in either table');
+      }
+
+      // Search embeddings table (it should work for both document sources)
       const { data, error, count } = await supabase
         .from('document_embeddings')
         .select(`
@@ -280,18 +393,21 @@ class DatabaseSearchService {
   // Get statistics
   async getStats(): Promise<SearchStats> {
     try {
-      const [customersResult, documentsResult, recentResult] = await Promise.all([
+      const [customersResult, documentsResult, outlookResult, recentResult] = await Promise.all([
         supabase.from('customers').select('id', { count: 'exact', head: true }),
         supabase.from('documents').select('id', { count: 'exact', head: true }),
+        supabase.from('documents_outlook').select('id', { count: 'exact', head: true }),
         supabase
           .from('documents')
           .select('id', { count: 'exact', head: true })
           .gte('uploaded_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
       ]);
 
+      const totalDocuments = (documentsResult.count || 0) + (outlookResult.count || 0);
+
       return {
         totalCustomers: customersResult.count || 0,
-        totalDocuments: documentsResult.count || 0,
+        totalDocuments: totalDocuments,
         recentUploads: recentResult.count || 0,
         searchResults: 0
       };
@@ -316,6 +432,10 @@ class DatabaseSearchService {
       supabase
         .channel('documents_changes')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'documents' }, callback)
+        .subscribe(),
+      supabase
+        .channel('documents_outlook_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'documents_outlook' }, callback)
         .subscribe()
     ];
 

@@ -249,6 +249,22 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ document, onClose, onDownlo
                   </span>
                 </span>
               )}
+              {document.source && (
+                <span style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <strong>Kilde:</strong>{' '}
+                  <span className="px-2 py-0.5 rounded text-xs" 
+                    style={{ 
+                      backgroundColor: document.source === 'documents_outlook' 
+                        ? 'rgb(var(--blue-100))' 
+                        : 'rgb(var(--green-100))',
+                      color: document.source === 'documents_outlook' 
+                        ? 'rgb(var(--blue-700))' 
+                        : 'rgb(var(--green-700))'
+                    }}>
+                    {document.source === 'documents_outlook' ? 'Outlook' : 'Standard'}
+                  </span>
+                </span>
+              )}
             </div>
             <span style={{ color: 'rgb(var(--muted-foreground))' }}>
               Opprettet: {document.createdate ? new Date(document.createdate).toLocaleString('nb-NO') : 'Ukjent'}
