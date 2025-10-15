@@ -52,7 +52,8 @@ export const n8nApi = {
         console.log(`Sending message to n8n (attempt ${attempt}/${maxRetries}):`, { webhookId, message: message.substring(0, 50) + '...' });
         
         // Build webhook URL using base URL and webhook ID
-        const fullWebhookUrl = `${N8N_BASE_URL}/webhook/${webhookId}`;
+        const baseUrl = N8N_BASE_URL.endsWith('/') ? N8N_BASE_URL.slice(0, -1) : N8N_BASE_URL;
+        const fullWebhookUrl = `${baseUrl}/webhook/${webhookId}`;
         
         console.log('🔗 Making request to:', fullWebhookUrl);
         console.log('📤 Request payload:', { message, timestamp: new Date().toISOString() });
