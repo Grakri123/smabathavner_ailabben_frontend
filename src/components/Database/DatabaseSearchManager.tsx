@@ -443,28 +443,34 @@ const DatabaseSearchManager: React.FC = () => {
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/3 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/3 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('name')}
                   >
-                    Kundenavn
-                    {getSortIcon('name')}
+                    <div className="flex items-center">
+                      Kundenavn
+                      {getSortIcon('name')}
+                    </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('customer_number')}
                   >
-                    Kundenummer
-                    {getSortIcon('customer_number')}
+                    <div className="flex items-center">
+                      Kundenummer
+                      {getSortIcon('customer_number')}
+                    </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('created_at')}
                   >
-                    Opprettet
-                    {getSortIcon('created_at')}
+                    <div className="flex items-center">
+                      Opprettet
+                      {getSortIcon('created_at')}
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger
@@ -536,39 +542,47 @@ const DatabaseSearchManager: React.FC = () => {
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('file_name')}
                   >
-                    Filnavn
-                    {getSortIcon('file_name')}
+                    <div className="flex items-center">
+                      Filnavn
+                      {getSortIcon('file_name')}
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Kunde
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('ourref')}
                   >
-                    Vår Ref
-                    {getSortIcon('ourref')}
+                    <div className="flex items-center">
+                      Vår Ref
+                      {getSortIcon('ourref')}
+                    </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('opplastnings_metode')}
                   >
-                    Metode
-                    {getSortIcon('opplastnings_metode')}
+                    <div className="flex items-center">
+                      Metode
+                      {getSortIcon('opplastnings_metode')}
+                    </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors flex items-center" 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('createdate')}
                   >
-                    Opprettet
-                    {getSortIcon('createdate')}
+                    <div className="flex items-center">
+                      Opprettet
+                      {getSortIcon('createdate')}
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger

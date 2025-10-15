@@ -82,31 +82,9 @@ class DatabaseSearchService {
 
       console.log('📋 Search conditions:', { whereClause });
 
-      // Use RPC function to search both tables with UNION
-      const { data, error, count } = await supabase.rpc('search_documents_union', {
-        search_term: searchTerm || '',
-        customer_filter: customerFilter || null,
-        page_offset: (page - 1) * pageSize,
-        page_limit: pageSize,
-        sort_field: sortField,
-        sort_direction: sortDirection
-      });
-
-      if (error) {
-        console.error('❌ RPC error, falling back to individual queries:', error);
-        // Fallback to individual queries if RPC doesn't exist
-        return await this.searchDocumentsFallback(searchTerm, customerFilter, page, pageSize, sortField, sortDirection);
-      }
-
-      console.log('✅ Union search results:', { count: data?.length, totalCount: count });
-
-      return {
-        data: data as Document[],
-        count: count || 0,
-        page,
-        pageSize,
-        totalPages: Math.ceil((count || 0) / pageSize)
-      };
+      // Use fallback method since RPC function doesn't exist
+      console.log('🔄 Using individual queries method');
+      return await this.searchDocumentsFallback(searchTerm, customerFilter, page, pageSize, sortField, sortDirection);
     } catch (error) {
       console.error('Error searching documents:', error);
       throw error;
@@ -153,10 +131,28 @@ class DatabaseSearchService {
         outlookQuery = outlookQuery.eq('customer_id', customerFilter);
       }
 
-      // Execute both queries with sorting
+      // Execute both queries with safe sorting
+      // Map frontend sort fields to actual database fields
+      const getDatabaseSortField = (field: string) => {
+        switch (field) {
+          case 'createdate':
+            return 'uploaded_at';
+          case 'file_name':
+            return 'file_name';
+          case 'ourref':
+            return 'ourref';
+          case 'opplastnings_metode':
+            return 'opplastnings_metode';
+          default:
+            return 'uploaded_at';
+        }
+      };
+
+      const dbSortField = getDatabaseSortField(sortField);
+      
       const [documentsResult, outlookResult] = await Promise.all([
-        documentsQuery.order(sortField === 'createdate' ? 'uploaded_at' : sortField, { ascending: sortDirection === 'asc' }),
-        outlookQuery.order(sortField === 'createdate' ? 'uploaded_at' : sortField, { ascending: sortDirection === 'asc' })
+        documentsQuery.order(dbSortField, { ascending: sortDirection === 'asc' }),
+        outlookQuery.order(dbSortField, { ascending: sortDirection === 'asc' })
       ]);
 
       if (documentsResult.error) throw documentsResult.error;
