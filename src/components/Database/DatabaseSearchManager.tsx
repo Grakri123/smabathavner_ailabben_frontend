@@ -125,7 +125,7 @@ const DatabaseSearchManager: React.FC = () => {
       const response = await databaseSearchService.searchCustomers(
         searchTerm,
         page,
-        10,
+        15,
         sortConfig.field as 'name' | 'customer_number' | 'created_at',
         sortConfig.direction
       );
@@ -151,7 +151,7 @@ const DatabaseSearchManager: React.FC = () => {
         searchTerm,
         selectedCustomerFilter?.id || undefined,
         page,
-        10,
+        15,
         sortConfig.field as 'file_name' | 'ourref' | 'opplastnings_metode' | 'createdate',
         sortConfig.direction
       );
@@ -443,7 +443,7 @@ const DatabaseSearchManager: React.FC = () => {
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/3 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/3 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('name')}
                   >
@@ -453,7 +453,7 @@ const DatabaseSearchManager: React.FC = () => {
                     </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('customer_number')}
                   >
@@ -463,7 +463,7 @@ const DatabaseSearchManager: React.FC = () => {
                     </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('created_at')}
                   >
@@ -472,7 +472,7 @@ const DatabaseSearchManager: React.FC = () => {
                       {getSortIcon('created_at')}
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger
                   </th>
                 </tr>
@@ -511,16 +511,16 @@ const DatabaseSearchManager: React.FC = () => {
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }}>
-                      <td className="px-6 py-6">
+                      <td className="px-4 py-3">
                         <div className="text-sm font-medium">{customer.name}</div>
                       </td>
-                      <td className="px-6 py-6 text-sm">
+                      <td className="px-4 py-3 text-sm">
                         <div className="font-mono text-xs">{customer.customer_number || '-'}</div>
                       </td>
-                      <td className="px-6 py-6 text-sm">
+                      <td className="px-4 py-3 text-sm">
                         <div>{new Date(customer.created_at).toLocaleDateString('no-NO')}</div>
                       </td>
-                      <td className="px-6 py-6 whitespace-nowrap text-sm font-medium">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <button
                             onClick={() => handleViewCustomerDocuments(customer)}
@@ -542,7 +542,7 @@ const DatabaseSearchManager: React.FC = () => {
               <thead style={{ backgroundColor: 'rgb(var(--muted))' }}>
                 <tr>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/4 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('file_name')}
                   >
@@ -551,11 +551,11 @@ const DatabaseSearchManager: React.FC = () => {
                       {getSortIcon('file_name')}
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/6" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Kunde
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('ourref')}
                   >
@@ -565,7 +565,7 @@ const DatabaseSearchManager: React.FC = () => {
                     </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('opplastnings_metode')}
                   >
@@ -575,7 +575,7 @@ const DatabaseSearchManager: React.FC = () => {
                     </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
+                    className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8 cursor-pointer hover:bg-opacity-80 transition-colors" 
                     style={{ color: 'rgb(var(--muted-foreground))' }}
                     onClick={() => handleSort('createdate')}
                   >
@@ -584,7 +584,7 @@ const DatabaseSearchManager: React.FC = () => {
                       {getSortIcon('createdate')}
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider w-1/8" style={{ color: 'rgb(var(--muted-foreground))' }}>
                     Handlinger
                   </th>
                 </tr>
@@ -626,26 +626,26 @@ const DatabaseSearchManager: React.FC = () => {
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }}>
-                      <td className="px-6 py-6">
+                      <td className="px-4 py-3">
                         <div className="text-sm font-medium truncate" title={document.file_name}>
                           {document.file_name}
                         </div>
                       </td>
-                      <td className="px-6 py-6 text-sm">
+                      <td className="px-4 py-3 text-sm">
                         <div className="truncate">{document.customer_name || '-'}</div>
                       </td>
-                      <td className="px-6 py-6 text-sm">
+                      <td className="px-4 py-3 text-sm">
                         <div className="font-mono text-xs truncate">{document.ourref || '-'}</div>
                       </td>
-                      <td className="px-6 py-6 text-sm">
+                      <td className="px-4 py-3 text-sm">
                         <div className="truncate">
                           {document.opplastnings_metode || '-'}
                         </div>
                       </td>
-                      <td className="px-6 py-6 text-sm">
+                      <td className="px-4 py-3 text-sm">
                         <div>{document.createdate ? new Date(document.createdate).toLocaleDateString('no-NO') : '-'}</div>
                       </td>
-                    <td className="px-6 py-6 whitespace-nowrap text-sm font-medium">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
                           onClick={() => setPreviewDocument(document)}
