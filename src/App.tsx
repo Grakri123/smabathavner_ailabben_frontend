@@ -92,7 +92,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-      <div className="h-screen flex relative">
+      <div className="h-screen flex relative overflow-hidden">
         {/* Mobile Menu Button */}
         <button
           onClick={() => setSidebarOpen(true)}
@@ -118,7 +118,7 @@ const AppContent: React.FC = () => {
         {/* Sidebar - Desktop: Always visible, Mobile: Drawer */}
         <div className={`flex transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:relative fixed inset-y-0 left-0 z-50`}>
+        } lg:relative fixed inset-y-0 left-0 z-50 overflow-hidden`}>
           <Sidebar />
           
                   {/* Secondary Navigation - Only show for SEO, Chat, Email and Database Agent */}
@@ -190,7 +190,7 @@ const AppContent: React.FC = () => {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col lg:ml-0">
+        <div className="flex-1 flex flex-col lg:ml-0 overflow-hidden">
           {renderContent()}
         </div>
       </div>

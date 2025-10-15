@@ -11,6 +11,7 @@ export interface SecureDownloadToken {
   ip_address: string | null;
   user_agent: string | null;
   metadata: Record<string, any>;
+  action_type?: 'download' | 'preview';
 }
 
 export interface DownloadLog {
@@ -24,6 +25,7 @@ export interface DownloadLog {
   file_size: number | null;
   download_successful: boolean;
   error_message: string | null;
+  action_type?: 'download' | 'preview';
 }
 
 export interface GenerateTokenRequest {
@@ -45,6 +47,7 @@ export interface ValidateTokenResponse {
   file_name: string | null;
   is_valid: boolean;
   error_message: string | null;
+  action_type?: string | null;
 }
 
 export interface DownloadStats {

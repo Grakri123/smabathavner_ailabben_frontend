@@ -118,7 +118,7 @@ const BlogManager: React.FC = () => {
   const draftCount = posts.filter(p => !p.publisert).length;
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6" style={{ maxWidth: 'var(--container-max-width)', margin: '0 auto' }}>
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6 h-full overflow-y-auto" style={{ maxWidth: 'var(--container-max-width)', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
